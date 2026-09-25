@@ -1,0 +1,68 @@
+# Blueprint Render: backend Dockerizzato + PostgreSQL gestito.
+# I segreti con "sync: false" NON stanno nel repository: si inseriscono dalla dashboard Render.
+
+databases:
+  - name: autodealer-db
+    databaseName: autodealer
+    user: autodealer
+    plan: free
+    region: frankfurt
+
+services:
+  - type: web
+    name: autodealer-backend
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # Render considera il servizio sano solo quando questo endpoint risponde 200 (è permitAll)
+    healthCheckPath: /actuator/health
+    envVars:
+      # Connessione al database, iniettata da Render nel formato postgres://...
+      # DatabaseUrl.java la traduce in URL JDBC all'avvio.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: autodealer-db
+          property: connectionString
+
+      # Chiave di firma JWT generata da Render: deve essere di almeno 32 caratteri
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 3600000
+      - key: JWT_ISSUER
+        value: AUTODEALER-25-SETTEMBRE
+
+      # Indirizzo esatto del frontend (es. https://autodealer.onrender.com)
+      - key: ALLOWED_ORIGIN
+        sync: false
+      # URL pubblico di QUESTO servizio: compone il link di disiscrizione nelle mail
+      - key: APP_BASE_URL
+        sync: false
+
+      # Amministratore iniziale, creato al primo avvio se non esiste gia' un ADMIN
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+      # SMTP: per Gmail serve una password per le app, mai la password dell'account
+      - key: MAIL_ENABLED
+        value: true
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+      # In produzione lo schema andrebbe gestito con migrazioni versionate (Flyway/Liquibase)
+      - key: JPA_DDL_AUTO
+        value: update

@@ -1,0 +1,3 @@
+# Deve girare prima dell'auto-configurazione del DataSource: non basta un @Bean
+org.springframework.boot.EnvironmentPostProcessor=\
+  javiertorres.backend.config.DatabaseUrl
