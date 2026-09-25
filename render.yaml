@@ -1,12 +1,6 @@
 # Blueprint Render: backend Dockerizzato, PostgreSQL gestito e frontend statico.
 # Deve stare nella RADICE del repository: è qui che Render lo cerca.
-# I valori con "sync: false" NON stanno nel repository: si inseriscono dalla dashboard.
-#
-# Ordine del primo deploy, perché i due servizi si citano a vicenda:
-#   1. deploy del Blueprint: Render assegna gli URL definitivi
-#   2. sul backend  -> ALLOWED_ORIGIN = URL del frontend, APP_BASE_URL = URL del backend
-#   3. sul frontend -> VITE_API_URL   = URL del backend, poi "Clear build cache & deploy"
-#      (VITE_API_URL viene letta durante la BUILD, non a runtime: cambiarla richiede un rebuild)
+# Gli URL tra servizi sono riferimenti Render: nessun valore manuale al primo deploy.
 
 databases:
   - name: autodealer-db
@@ -39,41 +33,33 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRATION
-        value: 3600000
+        value: "3600000"
       - key: JWT_ISSUER
         value: AUTODEALER-25-SETTEMBRE
 
       # Indirizzo esatto del frontend, senza barra finale (es. https://autodealer-frontend.onrender.com)
       - key: ALLOWED_ORIGIN
-        sync: false
+        fromService:
+          name: autodealer-frontend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
       # URL pubblico di QUESTO servizio: compone il link di disiscrizione nelle mail
       - key: APP_BASE_URL
-        sync: false
+        fromService:
+          name: autodealer-backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
 
       # Amministratore iniziale, creato al primo avvio se non esiste già un ADMIN.
       # Senza ADMIN_PASSWORD non viene creato nessun amministratore.
       - key: ADMIN_USERNAME
         value: admin
-      - key: ADMIN_EMAIL
-        sync: false
       - key: ADMIN_PASSWORD
-        sync: false
+        generateValue: true
 
-      # SMTP: per Gmail serve una password per le app, mai la password dell'account.
-      # Con MAIL_ENABLED=true e queste tre variabili vuote gli invii falliscono: in quel caso
-      # MailService rilascia il claim e l'avviso resta ritentabile, ma la mail non parte.
+      # I web service gratuiti di Render bloccano la porta SMTP 587.
       - key: MAIL_ENABLED
-        value: true
-      - key: MAIL_HOST
-        value: smtp.gmail.com
-      - key: MAIL_PORT
-        value: 587
-      - key: MAIL_USERNAME
-        sync: false
-      - key: MAIL_PASSWORD
-        sync: false
-      - key: MAIL_FROM
-        sync: false
+        value: "false"
 
       # In produzione lo schema andrebbe gestito con migrazioni versionate (Flyway/Liquibase)
       - key: JPA_DDL_AUTO
@@ -89,10 +75,13 @@ services:
     envVars:
       # Vite 8 richiede Node ^20.19 o >=22.12: senza questo Render userebbe una versione più vecchia
       - key: NODE_VERSION
-        value: 22
+        value: 24.15.0
       # URL del backend, letto al momento della build da src/lib/api.ts
       - key: VITE_API_URL
-        sync: false
+        fromService:
+          name: autodealer-backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
     routes:
       # App a pagina singola: senza questa regola /login, /admin e /catalogo
       # restituirebbero 404 al caricamento diretto o al refresh, perché a quei
