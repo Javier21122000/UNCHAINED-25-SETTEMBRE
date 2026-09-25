@@ -38,6 +38,12 @@
   body { min-height: 100svh; margin: 0; }
   button, input, select, textarea { font: inherit; }
   button { cursor: pointer; }
+
+  /* Niente lampo azzurro al tocco su iOS, e niente attesa dei 300 ms per il doppio tap */
+  a, button, input, select, textarea, [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
   a { color: inherit; }
   ::selection { color: var(--color-ivory); background: var(--color-terracotta); }
   :focus-visible { outline: 2px solid var(--color-ochre); outline-offset: 3px; }
@@ -184,8 +190,8 @@
 .site-header__action { display: inline-flex; align-items: center; gap: 0.45rem; white-space: nowrap; }
 .site-header__icon-button {
   display: inline-flex;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
   border: 0;
@@ -230,6 +236,8 @@
 .button {
   display: inline-flex;
   min-height: 44px;
+  /* Il testo non si spezza a metà parola sui bottoni stretti */
+  text-wrap: balance;
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
@@ -289,7 +297,9 @@
 }
 
 @media (max-width: 767px) {
-  .site-header { min-height: 76px; padding: 1rem 1.25rem; }
+  /* Lo sfondo colorato arriva sotto la barra di stato e sotto la barra home */
+  .site-main { padding-top: env(safe-area-inset-top); }
+  .site-header { min-height: 76px; padding: 0.75rem 1.25rem; }
   .site-header__nav, .site-header__action--desktop { display: none; }
   .site-header__menu-button { display: inline-flex; }
   .site-header__mobile-nav {
@@ -309,7 +319,10 @@
     backdrop-filter: blur(20px);
   }
   .site-header__mobile-nav a, .site-header__mobile-nav button {
+    display: flex;
     width: 100%;
+    min-height: 52px;
+    align-items: center;
     border: 0;
     border-radius: 0.5rem;
     padding: 0.8rem 0.9rem;
@@ -324,9 +337,28 @@
     text-transform: uppercase;
   }
   .site-header__mobile-nav a[aria-current='page'] { background: rgba(255, 255, 255, 0.12); }
-  .site-footer { padding: 1.5rem 1.25rem 2rem; }
+  .site-footer { padding: 1.5rem 1.25rem calc(2rem + env(safe-area-inset-bottom)); }
+  .site-footer__link { display: inline-flex; min-height: 44px; align-items: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+}
+
+
+/* ---------------------------------------------------------------------------
+ * Tocco e schermi piccoli.
+ * Fuori da @layer di proposito: le regole livellate perdono contro il CSS delle
+ * pagine, e questi minimi devono valere ovunque.
+ * ------------------------------------------------------------------------- */
+@media (pointer: coarse) {
+  /* Sotto i 16px Safari ingrandisce la pagina appena tocchi un campo, e non torna indietro */
+  input, select, textarea { font-size: max(16px, 1em); }
+}
+
+@media (max-width: 767px) {
+  /* Apple chiede almeno 44pt per un bersaglio toccabile: sotto si sbaglia mira.
+     Le altre pagine hanno i propri minimi nel rispettivo foglio di stile, perche'
+     un selettore piu' specifico come .auth-form input batterebbe una regola generica. */
+  .site-header__mobile-brand { display: inline-flex; min-height: 44px; align-items: center; }
 }

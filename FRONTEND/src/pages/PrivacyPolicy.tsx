@@ -13,7 +13,7 @@ export function PrivacyPolicy() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 420, damping: 34, mass: 0.7 }}
       >
-        <span className="eyebrow">Autodealer / Informativa privacy</span>
+        <span className="eyebrow">Unchained / Informativa privacy</span>
         <h1 id="privacy-title" className="display-title">I tuoi dati.<br /><em>Con chiarezza.</em></h1>
         <p>Questa informativa descrive i dati usati per gestire il tuo account, i preferiti e gli avvisi prezzo.</p>
       </motion.header>

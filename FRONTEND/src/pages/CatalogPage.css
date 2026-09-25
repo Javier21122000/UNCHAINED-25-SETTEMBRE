@@ -146,6 +146,7 @@
 .catalog-filters {
   display: flex;
   align-items: end;
+  flex-wrap: wrap;
   gap: 0.6rem;
   margin-top: 0.85rem;
   border: 1px solid rgba(255, 255, 255, 0.19);
@@ -844,20 +845,95 @@
 @media (max-width: 767px) {
   .catalog-top { padding-inline: 1.25rem; }
   .catalog-intro { align-items: flex-start; flex-direction: column; gap: 0.5rem; }
+  .catalog-intro__headline { font-size: 1.35rem; }
   .catalog-intro__count { text-align: left; }
-  .catalog-filters__field { flex: 1 1 calc(50% - 0.6rem); }
-  .catalog-filters__field--direction { flex: 1 1 calc(50% - 0.6rem); }
-  .catalog-filters__submit { order: 5; flex: 1 1 100%; border-radius: 0.45rem; }
-  .catalog-moods { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.25rem; }
-  .catalog-moods__item { flex: 0 0 auto; }
+
+  /* Filtri: due per riga, con controlli abbastanza alti da centrare col pollice.
+     Il testo a 16px evita che Safari ingrandisca la pagina quando si tocca un campo. */
+  .catalog-filters { gap: 0.5rem; padding: 0.6rem; }
+  .catalog-filters__field { flex: 1 1 calc(50% - 0.5rem); padding-inline: 0.4rem; }
+  .catalog-filters__field--sort,
+  .catalog-filters__field--direction { flex: 1 1 calc(50% - 0.5rem); }
+  .catalog-filters__field span { font-size: 0.58rem; }
+  .catalog-filters__field input,
+  .catalog-filters__field select {
+    min-height: 48px;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.6rem;
+    font-size: 16px;
+  }
+  .catalog-filters__submit {
+    order: 5;
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    flex: 1 1 100%;
+    gap: 0.5rem;
+    border-radius: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  /* Su schermo stretto l'icona da sola non dice cosa fa il bottone */
+  .catalog-filters__submit::after { content: 'Cerca'; }
+
+  /* Categorie: striscia scorrevole a tutta larghezza, con aggancio e respiro ai bordi */
+  .catalog-moods {
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+    margin-inline: -1.25rem;
+    overflow-x: auto;
+    padding: 0 1.25rem 0.35rem;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 1.25rem;
+  }
+  .catalog-moods::-webkit-scrollbar { display: none; }
+  .catalog-moods__item {
+    min-height: 44px;
+    flex: 0 0 auto;
+    padding-inline: 1rem;
+    font-size: 0.8rem;
+    scroll-snap-align: start;
+  }
+  .catalog-moods__item span { font-size: 0.68rem; }
   .catalog-hero { display: flex; flex-direction: column; margin-top: 0.8rem; }
   .catalog-hero__stage { min-height: min(62vw, 340px); }
   .catalog-hero__title { top: 12%; font-size: clamp(3rem, 13vw, 6rem); }
   .catalog-hero__car { bottom: -10%; left: -2%; width: 104%; }
-  .catalog-hero__details { padding: 0.8rem 1.25rem 1.2rem; }
+  .catalog-hero__details { padding: 0.8rem 1.25rem 1.4rem; }
   .catalog-hero__details h2 { font-size: 2.3rem; }
+  .catalog-hero__specs { gap: 0.5rem 1.5rem; }
+  .catalog-hero__specs dd { font-size: 1rem; }
+  .catalog-hero__actions { gap: 0.5rem; width: 100%; }
+  .catalog-hero__actions .button {
+    width: 100%;
+    min-height: 52px;
+    justify-content: center;
+    font-size: 0.88rem;
+  }
+  .catalog-hero__secondary-action {
+    min-height: 48px;
+    flex: 1 1 calc(50% - 0.25rem);
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+  .car-color { width: 26px; height: 26px; }
   .catalog-hero__description { max-width: 58ch; max-height: 6.4em; }
-  .catalog-carousel { padding: 1rem 1.25rem 0; }
+  .catalog-carousel { padding: 1rem 0 0; }
+  .catalog-carousel__heading { padding-inline: 1.25rem; }
+  .catalog-carousel__controls button { width: 44px; height: 44px; }
+  .catalog-carousel__rail {
+    gap: 0.9rem;
+    padding: 0.7rem 1.25rem 0.5rem;
+    scroll-padding-inline: 1.25rem;
+  }
+  .catalog-carousel__item { min-width: 156px; max-width: 156px; padding-bottom: 0.7rem; }
+  .catalog-carousel__image-wrap { height: 92px; }
+  .catalog-carousel__item-label strong { font-size: 0.78rem; }
+  .catalog-carousel__item-price { font-size: 0.74rem; }
   .car-dialog { display: block; }
   .car-dialog__visual { min-height: 300px; }
   .car-dialog__watermark { top: 22%; font-size: clamp(3rem, 13vw, 5rem); }
@@ -865,4 +941,15 @@
   .car-dialog__body { padding: 2rem 1.5rem; }
   .car-dialog__specs { grid-template-columns: 1fr; }
   .price-alert-dialog { padding: 2rem 1.5rem; }
+
+  /* Finestre a pieno schermo: sul telefono una scheda stretta spreca spazio
+     e lascia bersagli piccoli proprio dove si deve toccare. */
+  .modal-backdrop { padding: 0.5rem; }
+  .car-dialog, .price-alert-dialog { width: 100%; max-height: calc(100svh - 1rem); }
+  .car-dialog__close, .price-alert-dialog__close { width: 46px; height: 46px; top: 0.8rem; right: 0.8rem; }
+  .car-dialog__actions { width: 100%; gap: 0.5rem; }
+  .car-dialog__actions .button { width: 100%; min-height: 50px; justify-content: center; }
+  .car-dialog__back { min-height: 46px; align-items: center; font-size: 0.82rem; }
+  .price-alert-dialog form .button { width: 100%; min-height: 50px; justify-content: center; }
+  .price-alert-dialog__existing a { display: inline-flex; min-height: 44px; align-items: center; }
 }

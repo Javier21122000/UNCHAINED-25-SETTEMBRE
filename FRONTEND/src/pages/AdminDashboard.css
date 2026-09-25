@@ -74,3 +74,14 @@
   .admin-form__row { grid-template-columns: 1fr; }
   .admin-form__actions .button { width: 100%; }
 }
+
+
+@media (max-width: 767px) {
+  .admin-form input:not([type='checkbox']), .admin-form textarea { font-size: 16px; }
+  .admin-form input:not([type='checkbox']) { min-height: 48px; }
+  .admin-panel-heading > button, .admin-form-panel__icon { width: 44px; height: 44px; }
+  .admin-pagination button { min-height: 44px; }
+  /* La casella "bozza" da 18px e' impossibile da centrare: si tocca l'etichetta */
+  .admin-form__draft { display: flex; min-height: 44px; align-items: center; gap: 0.6rem; }
+  .admin-form__draft input { width: 22px; height: 22px; }
+}

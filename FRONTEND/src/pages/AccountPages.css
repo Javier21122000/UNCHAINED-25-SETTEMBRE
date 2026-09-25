@@ -132,3 +132,14 @@
   .profile-overview, .profile-danger { padding: 1.2rem; }
   .delete-dialog { padding: 2rem 1.5rem; }
 }
+
+
+@media (max-width: 767px) {
+  /* 16px esatti: sotto questa soglia Safari ingrandisce la pagina al tocco del campo */
+  .auth-form input { font-size: 16px; }
+  .auth-card__tabs a { display: flex; min-height: 48px; align-items: center; justify-content: center; }
+  .auth-form__password button { top: 0.15rem; right: 0.15rem; width: 46px; height: 46px; }
+  .auth-form .button { width: 100%; min-height: 50px; justify-content: center; }
+  .profile-section__count { width: 44px; height: 44px; }
+  .profile-item .button, .profile-item button { min-height: 44px; }
+}

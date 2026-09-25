@@ -1,4 +1,4 @@
--- Catalogo Autodealer: 26 auto (27 schede contando i due colori della Mustang).
+-- Catalogo Unchained: 26 auto (27 schede contando i due colori della Mustang).
 -- Generato dal database locale. id, created_at e updated_at sono rigenerati
 -- all'inserimento, cosi' lo script vale su qualunque ambiente.
 --

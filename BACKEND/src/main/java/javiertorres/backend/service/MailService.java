@@ -53,7 +53,7 @@ public class MailService {
                 Per non ricevere più avvisi su questa auto:
                 %s
 
-                Salone Auto
+                Unchained
                 """.formatted(
                 user.getUsername(),
                 auto,
@@ -70,7 +70,7 @@ public class MailService {
                   <p>il prezzo di <strong>%s</strong> è sceso da %s&nbsp;€ a
                      <strong>%s&nbsp;€</strong>, sotto la soglia di %s&nbsp;€ che avevi impostato.</p>
                   <p><a href="%s">Non voglio più avvisi su questa auto</a></p>
-                  <p style="color:#777;font-size:12px;">Salone Auto</p>
+                  <p style="color:#777;font-size:12px;">Unchained</p>
                 </body>
                 </html>
                 """.formatted(

@@ -35,7 +35,7 @@ services:
       - key: JWT_EXPIRATION
         value: "3600000"
       - key: JWT_ISSUER
-        value: AUTODEALER-25-SETTEMBRE
+        value: UNCHAINED-25-SETTEMBRE
 
       # Indirizzo esatto del frontend, senza barra finale.
       # NON si può usare fromService qui: puntando al static site, RENDER_EXTERNAL_URL non

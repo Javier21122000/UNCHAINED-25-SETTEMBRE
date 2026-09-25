@@ -47,8 +47,8 @@ function Header() {
   return (
     <header className="site-header">
       <div className="site-header__left">
-        <a className="site-header__mobile-brand" href="/" aria-label="Autodealer, home">
-          AUTODEALER
+        <a className="site-header__mobile-brand" href="/" aria-label="Unchained, home">
+          UNCHAINED
         </a>
         <nav className="site-header__nav" aria-label="Navigazione principale">
           {links.map(({ href, label }) => (
@@ -143,7 +143,7 @@ function Footer() {
         <a className="site-footer__link" href="/privacy-policy">Privacy Policy</a>
         <a className="site-footer__link" href="/cookie-policy">Cookie Policy</a>
       </div>
-      <span className="site-footer__meta">© {new Date().getFullYear()} Autodealer · La strada ti aspetta</span>
+      <span className="site-footer__meta">© {new Date().getFullYear()} Unchained · La strada ti aspetta</span>
     </footer>
   )
 }
@@ -153,9 +153,9 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="site-backdrop">
       <a className="skip-link" href="#main-content">Vai al contenuto</a>
       <div className="site-shell">
-        <aside className="brand-panel" aria-label="Autodealer">
-          <a className="brand-lockup" href="/" aria-label="Autodealer, home">
-            <span className="brand-lockup__name">AUTODEALER</span>
+        <aside className="brand-panel" aria-label="Unchained">
+          <a className="brand-lockup" href="/" aria-label="Unchained, home">
+            <span className="brand-lockup__name">UNCHAINED</span>
             <span className="brand-lockup__tagline">Drive your story</span>
           </a>
           <div className="brand-panel__story">

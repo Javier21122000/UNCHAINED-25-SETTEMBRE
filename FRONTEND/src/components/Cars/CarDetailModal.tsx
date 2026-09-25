@@ -80,7 +80,7 @@ export function CarDetailModal({ car, selectedVariantIndex, onVariantSelect, onC
             </button>
 
             <div className="car-dialog__visual" data-mood={profile?.category}>
-              <span className="eyebrow">Autodealer / Dettaglio</span>
+              <span className="eyebrow">Unchained / Dettaglio</span>
               <span className="display-title car-dialog__watermark" aria-hidden="true">
                 {car.modello}
               </span>

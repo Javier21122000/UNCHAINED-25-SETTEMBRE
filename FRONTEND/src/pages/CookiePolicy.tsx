@@ -13,7 +13,7 @@ export function CookiePolicy() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 420, damping: 34, mass: 0.7 }}
       >
-        <span className="eyebrow">Autodealer / Cookie Policy</span>
+        <span className="eyebrow">Unchained / Cookie Policy</span>
         <h1 id="cookie-title" className="display-title">Un accesso.<br /><em>Trasparente.</em></h1>
         <p>Ti spieghiamo quali informazioni vengono salvate nel browser per mantenere attiva la sessione.</p>
       </motion.header>

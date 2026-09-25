@@ -70,7 +70,7 @@ export function LoginPage({ mode = 'login' }: LoginPageProps) {
       >
         <div className="auth-card__intro">
           <span className="auth-card__icon"><LockKeyhole size={25} strokeWidth={1.7} aria-hidden="true" /></span>
-          <p className="eyebrow">Il tuo spazio Autodealer</p>
+          <p className="eyebrow">Il tuo spazio Unchained</p>
           <h1 className="display-title">{isRegister ? 'La strada comincia qui.' : 'Bentornato.'}</h1>
           <p>
             {isRegister
