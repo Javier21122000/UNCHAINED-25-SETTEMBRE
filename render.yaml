@@ -55,12 +55,21 @@ services:
       # Senza ADMIN_PASSWORD non viene creato nessun amministratore.
       - key: ADMIN_USERNAME
         value: admin
+      - key: ADMIN_EMAIL
+        value: admin@autodealer.local
       - key: ADMIN_PASSWORD
-        generateValue: true
+        # Credenziale di progettazione documentata in progettazione.md.
+        value: pswjaviunchained
 
-      # I web service gratuiti di Render bloccano la porta SMTP 587.
+      # Resend usa HTTPS e funziona anche sui servizi Render che bloccano le porte SMTP.
       - key: MAIL_ENABLED
-        value: "false"
+        value: "true"
+      - key: MAIL_PROVIDER
+        value: resend
+      - key: MAIL_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
 
       # In produzione lo schema andrebbe gestito con migrazioni versionate (Flyway/Liquibase)
       - key: JPA_DDL_AUTO
@@ -91,6 +100,18 @@ services:
         source: /*
         destination: /index.html
     headers:
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; connect-src 'self' https://autodealer-backend.onrender.com; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=()
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
       - path: /assets/*
         name: Cache-Control
         # I nomi dei file di dist/assets contengono l'hash del contenuto: sicuri da tenere in cache

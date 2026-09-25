@@ -14,9 +14,10 @@ app_pwd="${app_pwd// /}"
 (( ${#app_pwd} == 16 )) || { echo "Attese 16 lettere: hai inserito ${#app_pwd} caratteri. È la password per le app, non quella dell'account." >&2; exit 1; }
 
 tmp=$(mktemp)
-grep -vE '^#?(MAIL_ENABLED|MAIL_USERNAME|MAIL_PASSWORD|MAIL_FROM)=' .env.local > "$tmp"
+grep -vE '^#?(MAIL_ENABLED|MAIL_PROVIDER|MAIL_USERNAME|MAIL_PASSWORD|MAIL_FROM)=' .env.local > "$tmp"
 {
   echo "MAIL_ENABLED=true"
+  echo "MAIL_PROVIDER=smtp"
   printf 'MAIL_USERNAME=%s\n' "$addr"
   printf 'MAIL_PASSWORD=%s\n' "$app_pwd"
   # Gmail rifiuta un mittente diverso dall'account autenticato

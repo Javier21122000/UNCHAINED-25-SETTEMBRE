@@ -65,7 +65,7 @@ export function getApiErrorMessage(error: unknown, fallback = 'Si è verificato 
   if (status === 409) return message || 'Già esistente.'
   if (status === 401) {
     return isAuthRequest(error.config?.url)
-      ? 'Username o password non corretti.'
+      ? 'Username, email o password non corretti.'
       : 'Sessione scaduta. Accedi di nuovo.'
   }
   if (status === 403) return 'Non hai i permessi per questa operazione.'

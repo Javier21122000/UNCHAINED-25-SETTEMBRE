@@ -93,17 +93,17 @@ export function LoginPage({ mode = 'login' }: LoginPageProps) {
               <a href={`/register${nextQuery}`} aria-current={isRegister ? 'page' : undefined}>Registrati</a>
             </div>
             <form className="auth-form" onSubmit={(event) => void submit(event)}>
-              <label htmlFor="auth-username">Username</label>
+              <label htmlFor="auth-username">{isRegister ? 'Username' : 'Username o email'}</label>
               <input
                 id="auth-username"
                 name="username"
                 autoComplete="username"
                 required
                 minLength={isRegister ? 3 : 1}
-                maxLength={50}
+                maxLength={isRegister ? 50 : 254}
                 value={username}
                 onChange={(event) => { setUsername(event.target.value); clearError() }}
-                placeholder="Il tuo username"
+                placeholder={isRegister ? 'Il tuo username' : 'Username o email'}
               />
 
               {isRegister && (

@@ -33,7 +33,7 @@ public class AuthService {
         if (userRepository.existsByUsername(request.username())) {
             throw new ConflictException("Username già in uso");
         }
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmailIgnoreCase(request.email())) {
             throw new ConflictException("Email già registrata");
         }
 

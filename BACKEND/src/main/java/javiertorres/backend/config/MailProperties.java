@@ -2,6 +2,7 @@ package javiertorres.backend.config;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -15,7 +16,9 @@ import org.springframework.validation.annotation.Validated;
 public record MailProperties(
         @NotBlank @Email String from,
         @NotBlank String baseUrl,
-        boolean enabled
+        boolean enabled,
+        @NotBlank @Pattern(regexp = "smtp|resend") String provider,
+        String apiKey
 ) {
     public MailProperties {
         baseUrl = baseUrl == null ? null : baseUrl.replaceAll("/+$", "");
@@ -23,5 +26,13 @@ public record MailProperties(
 
     public String unsubscribeUrl(java.util.UUID token) {
         return "%s/api/alerts/unsubscribe/%s".formatted(baseUrl, token);
+    }
+
+    public boolean usesResend() {
+        return "resend".equals(provider);
+    }
+
+    public boolean hasApiKey() {
+        return apiKey != null && !apiKey.isBlank();
     }
 }

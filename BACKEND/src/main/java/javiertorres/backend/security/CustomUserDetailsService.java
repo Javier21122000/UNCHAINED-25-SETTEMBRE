@@ -16,8 +16,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public UserDetails loadUserByUsername(String login) {
+        return userRepository.findByUsername(login)
+                .or(() -> userRepository.findByEmailIgnoreCase(login))
                 .map(UserPrincipal::withCredentials)
                 // Il DaoAuthenticationProvider la converte in BadCredentialsException (no user enumeration)
                 .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));

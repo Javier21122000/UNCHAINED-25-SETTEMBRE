@@ -53,8 +53,12 @@ public class PriceAlertNotificationService {
         }
 
         try {
-            mailService.sendPriceDropNotification(alert, event.prezzoPrecedente());
-            return true;
+            boolean delivered = mailService.sendPriceDropNotification(alert, event.prezzoPrecedente());
+            if (delivered) {
+                return true;
+            }
+            claimService.release(alert.getId());
+            return false;
         } catch (MailException ex) {
             // JavaMail cita il destinatario nell'errore: mai in chiaro nei log
             log.error("Invio fallito per avviso id={}: {}", alert.getId(), LogSanitizer.redact(ex.getMessage()));

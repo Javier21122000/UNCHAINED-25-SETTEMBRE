@@ -4,6 +4,9 @@
 
 https://autodealer-frontend.onrender.com
 
+Per gli avvisi email il backend usa l'API HTTPS di Resend su Render. Nella dashboard del
+servizio vanno valorizzate `MAIL_API_KEY` e `MAIL_FROM`; in locale resta disponibile SMTP.
+
 ## Credenziali admin
 
 - Email: `admin@autodealer.local`

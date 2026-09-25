@@ -15,7 +15,12 @@
 .site-shell:has(.catalog-page) .site-main { min-height: 0; overflow: hidden; }
 .site-shell:has(.catalog-page) .site-content { min-height: 0; overflow: hidden; }
 .site-shell:has(.catalog-page) .site-header { min-height: 0; padding-block: 0.9rem; }
-.site-shell:has(.catalog-page) .site-footer { padding-block: 0.7rem 1rem; }
+.site-shell:has(.catalog-page) .site-footer {
+  padding-block: 0.7rem 1rem;
+  /* Il marrone scuro del piè di pagina spariva sul velo della striscia auto */
+  color: rgba(255, 253, 249, 0.74);
+  background: linear-gradient(to top, rgba(10, 12, 14, 0.82), rgba(10, 12, 14, 0.62));
+}
 
 .catalog-page {
   display: grid;
@@ -33,34 +38,63 @@
 .site-main { transition: background 0.75s ease; }
 
 .site-main:has(.catalog-page[data-mood='classiche']) {
+  --mood-foto: url('/images/moods/classiche-wide.webp');
   background:
     radial-gradient(circle at 82% 52%, rgba(246, 223, 186, 0.22), transparent 34%),
     linear-gradient(180deg, #5c5347 0%, #948068 34%, #d9b184 73%, #e8c89b 100%);
 }
 .site-main:has(.catalog-page[data-mood='supercar']) {
+  --mood-foto: url('/images/moods/supercar-wide.webp');
   background:
     radial-gradient(circle at 82% 52%, rgba(255, 196, 150, 0.2), transparent 34%),
     linear-gradient(180deg, #2b2426 0%, #5b3033 35%, #a8453c 74%, #c9683f 100%);
 }
 .site-main:has(.catalog-page[data-mood='suv']) {
+  --mood-foto: url('/images/moods/suv-wide.webp');
   background:
     radial-gradient(circle at 82% 52%, rgba(238, 228, 180, 0.2), transparent 34%),
     linear-gradient(180deg, #38423a 0%, #667058 35%, #a89a6f 74%, #c8b184 100%);
 }
 .site-main:has(.catalog-page[data-mood='hypercar']) {
+  --mood-foto: url('/images/moods/hypercar-wide.webp');
   background:
     radial-gradient(circle at 82% 52%, rgba(150, 230, 240, 0.16), transparent 34%),
     linear-gradient(180deg, #0f1822 0%, #1c3040 38%, #2d5566 74%, #46808c 100%);
 }
 .site-main:has(.catalog-page[data-mood='utilitarie']) {
+  --mood-foto: url('/images/moods/utilitarie-wide.webp');
   background:
     radial-gradient(circle at 82% 52%, rgba(255, 250, 220, 0.22), transparent 34%),
     linear-gradient(180deg, #2f4750 0%, #4f727a 38%, #86a196 74%, #b9c2a6 100%);
 }
 .site-main:has(.catalog-page[data-mood='special']) {
+  --mood-foto: url('/images/moods/special-wide.webp');
   background:
     radial-gradient(circle at 82% 52%, rgba(255, 224, 150, 0.18), transparent 34%),
     linear-gradient(180deg, #14120e 0%, #2e2619 38%, #5c4a26 74%, #8d7335 100%);
+}
+
+/* Fondale d'ambiente.
+ * Le foto di partenza hanno il lato corto di 735 px: invece di ingrandirle nitide,
+ * e sgranarle, sono state sfocate e scurite in fase di preparazione. Qui vengono
+ * posate sopra il gradiente del mood con opacita' ridotta, cosi' l'ambiente si
+ * percepisce ma il testo chiaro resta leggibile. */
+.site-main:has(.catalog-page) { position: relative; isolation: isolate; }
+.site-main:has(.catalog-page)::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: var(--mood-foto) center / cover no-repeat;
+  content: '';
+  opacity: 0.62;
+  transition: opacity 0.75s ease;
+  pointer-events: none;
+}
+/* Testata, contenuto e pie' di pagina restano sopra il fondale */
+.site-main:has(.catalog-page) > * { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .site-main:has(.catalog-page)::before { transition: none; }
 }
 
 /* Variabili di mood lette dall'hero e dalla striscia in basso */
@@ -318,13 +352,15 @@
   height: 51%;
   background: var(--mood-ridge-back);
   clip-path: polygon(0 70%, 17% 49%, 31% 53%, 52% 23%, 70% 44%, 100% 9%, 100% 100%, 0 100%);
-  opacity: 0.68;
+  /* Quasi invisibile: il paesaggio ora lo fa la fotografia */
+  opacity: 0.12;
 }
 .catalog-hero__ridge--front {
   z-index: 1;
-  height: 25%;
-  background: var(--mood-ridge-front);
-  clip-path: polygon(0 55%, 31% 22%, 52% 48%, 77% 12%, 100% 38%, 100% 100%, 0 100%);
+  /* Striscia bassa e sfumata: serve solo a dare appoggio alle ruote */
+  height: 16%;
+  background: linear-gradient(to top, rgba(12, 14, 16, 0.42), transparent);
+  clip-path: none;
 }
 .catalog-hero__title {
   position: absolute;
@@ -373,6 +409,8 @@
 .catalog-hero__details {
   position: relative;
   z-index: 4;
+  /* Il testo chiaro deve reggere anche sui punti piu' luminosi della fotografia */
+  background: linear-gradient(to right, transparent, rgba(12, 14, 16, 0.46) 22%, rgba(12, 14, 16, 0.58));
   display: flex;
   min-height: 0;
   flex-direction: column;
@@ -538,8 +576,8 @@
   position: relative;
   z-index: 4;
   padding: 0.6rem clamp(20px, 2.4vw, 44px) 0;
-  color: var(--mood-deep);
-  transition: color 0.75s ease;
+  color: var(--color-ivory);
+  background: linear-gradient(to top, rgba(10, 12, 14, 0.78), rgba(10, 12, 14, 0.42) 65%, transparent);
 }
 .catalog-carousel__heading {
   display: flex;
@@ -613,7 +651,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.catalog-carousel__item-price { margin: 0.2rem 0 0 1.4rem; font-size: 0.66rem; opacity: 0.85; }
+.catalog-carousel__item-price { margin: 0.2rem 0 0 1.4rem; font-size: 0.66rem; opacity: 0.9; }
 
 /* --------------------------------------------------------------- scheda auto */
 .car-dialog {
@@ -843,7 +881,24 @@
 }
 
 @media (max-width: 767px) {
-  .catalog-top { padding-inline: 1.25rem; }
+  /* Taglio verticale: quello orizzontale su schermo stretto perderebbe tutto il contesto */
+  .site-main:has(.catalog-page[data-mood='classiche']) { --mood-foto: url('/images/moods/classiche-tall.webp'); }
+  .site-main:has(.catalog-page[data-mood='supercar']) { --mood-foto: url('/images/moods/supercar-tall.webp'); }
+  .site-main:has(.catalog-page[data-mood='suv']) { --mood-foto: url('/images/moods/suv-tall.webp'); }
+  .site-main:has(.catalog-page[data-mood='hypercar']) { --mood-foto: url('/images/moods/hypercar-tall.webp'); }
+  .site-main:has(.catalog-page[data-mood='utilitarie']) { --mood-foto: url('/images/moods/utilitarie-tall.webp'); }
+  .site-main:has(.catalog-page[data-mood='special']) { --mood-foto: url('/images/moods/special-tall.webp'); }
+
+  /* Sul taglio verticale il cielo chiaro finisce dietro testata e filtri:
+     senza velo il testo avorio ci si perde sopra. */
+  .site-shell:has(.catalog-page) .site-header {
+    background: linear-gradient(to bottom, rgba(10, 12, 14, 0.62), rgba(10, 12, 14, 0.34));
+  }
+  .catalog-top {
+    padding-inline: 1.25rem;
+    padding-bottom: 0.6rem;
+    background: linear-gradient(to bottom, rgba(10, 12, 14, 0.34), rgba(10, 12, 14, 0.16) 72%, transparent);
+  }
   .catalog-intro { align-items: flex-start; flex-direction: column; gap: 0.5rem; }
   .catalog-intro__headline { font-size: 1.35rem; }
   .catalog-intro__count { text-align: left; }

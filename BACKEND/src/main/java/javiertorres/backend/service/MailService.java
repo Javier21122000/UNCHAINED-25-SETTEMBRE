@@ -10,15 +10,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailPreparationException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.HtmlUtils;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
-/** Composizione e invio delle notifiche. Non conosce transazioni né stato: fa solo I/O SMTP. */
+/** Composizione e invio via SMTP o API HTTPS. Non conosce transazioni né stato applicativo. */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,8 @@ public class MailService {
 
     private final JavaMailSender mailSender;
     private final MailProperties mailProperties;
+
+    private final RestClient resendClient = RestClient.create("https://api.resend.com");
 
     /**
      * Mail multipart: versione testo e versione HTML. Nel template HTML <b>ogni</b> valore che
@@ -35,8 +41,10 @@ public class MailService {
      *
      * @throws MailException se l'invio fallisce: il chiamante rilascia il claim così
      *                       l'avviso resta attivo e potrà essere notificato in futuro
+     * @return {@code true} quando il provider accetta la consegna; {@code false} se l'invio
+     *         è disabilitato
      */
-    public void sendPriceDropNotification(PriceAlert alert, BigDecimal prezzoPrecedente) {
+    public boolean sendPriceDropNotification(PriceAlert alert, BigDecimal prezzoPrecedente) {
         User user = alert.getUser();
         Car car = alert.getCar();
 
@@ -83,9 +91,15 @@ public class MailService {
                 HtmlUtils.htmlEscape(unsubscribeUrl));
 
         if (!mailProperties.enabled()) {
-            // Dev e test: nessuna connessione SMTP, ma il flusso resta identico
-            log.info("Invio mail disabilitato, notifica non spedita per avviso id={}", alert.getId());
-            return;
+            // Il chiamante rilascera' il claim: un avviso mai spedito non deve risultare "inviato".
+            log.warn("Invio mail disabilitato, notifica lasciata in attesa per avviso id={}", alert.getId());
+            return false;
+        }
+
+        if (mailProperties.usesResend()) {
+            sendWithResend(user.getEmail(), subject, plainText, html);
+            log.info("Notifica di ribasso inviata via API HTTPS per avviso id={}", alert.getId());
+            return true;
         }
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -103,5 +117,28 @@ public class MailService {
 
         mailSender.send(message);
         log.info("Notifica di ribasso inviata per avviso id={}", alert.getId());
+        return true;
+    }
+
+    private void sendWithResend(String recipient, String subject, String plainText, String html) {
+        if (!mailProperties.hasApiKey()) {
+            throw new MailSendException("MAIL_API_KEY mancante per il provider Resend");
+        }
+
+        try {
+            resendClient.post()
+                    .uri("/emails")
+                    .header("Authorization", "Bearer " + mailProperties.apiKey())
+                    .body(Map.of(
+                            "from", mailProperties.from(),
+                            "to", new String[]{recipient},
+                            "subject", subject,
+                            "text", plainText,
+                            "html", html))
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientException ex) {
+            throw new MailSendException("Invio via API HTTPS fallito", ex);
+        }
     }
 }

@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Size;
 import java.nio.charset.StandardCharsets;
 
 public record LoginRequest(
-        @NotBlank @Size(max = 50) String username,
+        // Accetta sia lo username (max 50) sia l'email (max 254).
+        @NotBlank @Size(max = 254) String username,
         @NotBlank @Size(max = 72) String password
 ) {
     public LoginRequest {
